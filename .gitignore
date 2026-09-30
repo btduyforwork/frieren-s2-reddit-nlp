@@ -1,0 +1,23 @@
+# Reddit data: never committed (see CLAUDE.md, "Data rules")
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Secrets and local settings
+.env
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
