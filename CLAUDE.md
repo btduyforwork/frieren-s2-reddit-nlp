@@ -18,11 +18,12 @@ NLP analysis of Reddit discussion of *Frieren: Beyond Journey's End* Season 2 on
 
 - Posts created 2026-01-01 to 2026-04-01 UTC in r/Frieren and r/anime; keep every comment on those posts. Each post gets a `post_type`: episode discussion thread or keyword post.
 - Data source: Arctic Shift only. Fetch once into a dated raw snapshot with a manifest; every later stage reads the snapshot, never the API.
+- English comments only, detected automatically; the number removed as non-English is reported.
 - "Sentiment" means **opinion about the show**, not emotional tone. Story words (demon, kill, death) are not negative opinion.
 - Sentiment: VADER baseline vs a transformer model, both scored against about 300 hand labels (accuracy, macro-F1, confusion matrix).
 - Topics: TF-IDF + NMF vs BERTopic; choose the number of topics by NPMI coherence, diversity, stability over 5 seeds, and human reading. One topic per comment, with a minimum weight, otherwise "unassigned".
 - Statistics: chi-square + Cramér's V for proportions; cluster bootstrap (resample whole posts) for confidence intervals on means.
-- Deliverables: `README.md` + `report/report.md`.
+- Deliverables: `README.md` + `report/report.md`. The report links each finding to a practical decision for a named stakeholder.
 
 ## Data rules
 
