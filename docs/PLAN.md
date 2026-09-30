@@ -30,6 +30,9 @@ One stage means one pull request, so the project history reads like a story.
 | Token | One unit of text, usually a word. |
 | Hand labels | Comments you read and label yourself. They are the "answer key" used to check the models. |
 | Snapshot | A saved copy of the downloaded data, so every later step uses exactly the same data. |
+| Language detection | A small model that guesses which language a text is written in. Used to keep only English comments, because VADER and most sentiment models only understand English. |
+| Data funnel | A table showing how many comments are left after each cleaning step, so every number in the report can be traced back. |
+| Stakeholder | A person or organisation who could act on the findings, for example the studio, the streaming service or subreddit moderators. |
 
 ## The stages
 
@@ -65,12 +68,12 @@ One stage means one pull request, so the project history reads like a story.
 ### Stage 3: Check and explore the data
 **What:** make sure the data is sound before trusting it: no duplicates, no missing ids, comments linked to their posts. Then take a first look: how many posts and comments per subreddit, per episode, per post type.
 **Claude does:** writes the checks and a short exploration notebook.
-**Done when:** the counts match the manifest, and you have a feel for the data.
+**Done when:** the counts match the manifest, the raw counts are saved as the first row of the data funnel (`outputs/funnel.csv`), and you have a feel for the data.
 
 ### Stage 4: Clean the text
-**What:** remove deleted comments, bots and moderator messages, then prepare two versions of each comment: a lightly cleaned one for sentiment (keeps emoji and capitals, which carry feeling) and a heavily cleaned one for topics (lowercase, common filler words removed).
-**You decide:** whether to reduce words to their base form ("episodes" to "episode"), and how short a comment can be before it is dropped for topics.
-**Done when:** every cleaning rule has a test.
+**What:** remove deleted comments, bots, moderator messages and duplicates, then keep only English comments using a language detector. Then prepare two versions of each comment: a lightly cleaned one for sentiment (keeps punctuation, emoji, capitals and words like "not", which VADER uses to judge feeling) and a heavily cleaned one for topics (lowercase, common filler words removed). Each step adds a row to the data funnel: raw → deleted → bots/moderators → duplicates → non-English → too short → final.
+**You decide:** which language detector to use (`lingua`: accurate on short text but slow; fastText `lid.176`: fast and good; `langdetect`: simple but unreliable on short text); what to do with comments too short to detect reliably ("lol", "10/10"); whether to reduce words to their base form ("episodes" to "episode"); and how short a comment can be before it is dropped for topics.
+**Done when:** every cleaning rule has a test, the language filter is checked by reading a sample of removed comments, and `outputs/funnel.csv` has a row for every step.
 
 ### Stage 5: Find the topics
 **What:** try two topic methods, NMF (groups comments by shared words) and BERTopic (groups comments by meaning), with different numbers of topics. Score them on coherence (do the top words belong together?), diversity (are topics different from each other?) and stability (do the same topics come back with a different random seed?). Then read example comments yourself.
@@ -92,8 +95,10 @@ One stage means one pull request, so the project history reads like a story.
 **Done when:** every claim you plan to make has a table in `outputs/` with its test and effect size.
 
 ### Stage 9: Figures, report and README
-**What:** charts, a written report (`report/report.md`: question, data, methods, how the models were checked, results, limitations, ethics) and a README explaining how to rerun everything.
-**Done when:** a stranger could read the report, trust it, and reproduce it. A final code review and a check that no comment text or usernames are in git.
+**What:** charts, a written report (`report/report.md`: question, data including the data funnel, methods, how the models were checked, results, recommendations for stakeholders, limitations, ethics) and a README explaining how to rerun everything.
+**Recommendations for stakeholders:** each main finding is linked to a decision someone could make. For example: "negative opinion rises when pacing is discussed around episode X, so the studio could review how chapters are split across episodes." Each recommendation says how strong its evidence is (the test and effect size from Stage 8).
+**You decide:** which stakeholders to write for (for example the studio Madhouse, the streaming service Crunchyroll, or subreddit moderators).
+**Done when:** a stranger could read the report, trust it, and reproduce it, and every recommendation points to a result table in `outputs/`. A final code review and a check that no comment text or usernames are in git.
 
 ## Rules that apply everywhere
 
