@@ -10,7 +10,7 @@ NLP analysis of Reddit discussion of *Frieren: Beyond Journey's End* Season 2 on
 
 - The owner is new to AI and NLP and is learning NLP, software engineering and AI-assisted development. Explain terms in plain words, explain *why*, offer options with trade-offs, and let the owner make the key technical decisions (methods, thresholds, number of topics, labels, model choice). Never pick them silently.
 - Work in the loop **Explore → Plan → Code → Review → Commit**. Show the plan before writing code for anything beyond a small fix.
-- Keep changes small and scoped to the current stage of the plan. One pull request per stage.
+- Keep changes small and scoped to the current stage of `docs/PLAN.md`. One pull request per stage; tick the stage's status in the plan when it merges.
 - Ask before pushing, opening a pull request, or rewriting git history.
 - Write code, comments and docs in English.
 
